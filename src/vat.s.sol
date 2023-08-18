@@ -7,7 +7,7 @@ import {Vat} from "dss/vat.sol";
 import {RegistryUtil} from "./ScriptUtil.sol";
 import {IRegistry} from "./interfaces.sol";
 
-//  ./scripts/forge-script.sh ./src/Vat.s.sol:VatDeploy --fork-url=$RPC_URL --broadcast -vvvv
+//  ./scripts/forge-script.sh ./src/vat.s.sol:VatDeploy --fork-url=$RPC_URL --broadcast -vvvv
 contract VatDeploy is Script {
     function run() external returns (Vat) {
         vm.startBroadcast();
@@ -28,7 +28,7 @@ contract VatDeploy is Script {
     }
 }
 
-//  ./scripts/forge-script.sh ./src/Vat.s.sol:VatInitialize --fork-url=$RPC_URL --broadcast -vvvv
+//  ./scripts/forge-script.sh ./src/vat.s.sol:VatInitialize --fork-url=$RPC_URL --broadcast -vvvv
 contract VatInitialize is Script {
     function run() external {
         vm.startBroadcast();
