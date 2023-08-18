@@ -3,8 +3,8 @@
 -include .env
 
 # install solc version
-# example to install other versions: `make solc 0_8_14`
-SOLC_VERSION := 0_8_14
+# example to install other versions: `make solc 0_6_12`
+SOLC_VERSION := 0_6_12
 solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_${SOLC_VERSION}
 
 clean:; forge clean

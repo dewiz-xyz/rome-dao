@@ -1,0 +1,16 @@
+{
+  "solidity.packageDefaultDependenciesContractsDirectory": "src",
+  "solidity.packageDefaultDependenciesDirectory": "lib",
+  "solidity.remappings": [
+    "dss/=lib/dss/src/",
+    "forge-std/=lib/forge-std/src/",
+  ],
+  "editor.formatOnSave": true,
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity" 
+  },
+  "solidity.formatter": "forge",
+  "solidity.linter": "solhint",
+  "solidity.compileUsingRemoteVersion": "v0.6.12+commit.27d51765",
+  "solidity.solhintRules": {"no-console": "off"}
+}
