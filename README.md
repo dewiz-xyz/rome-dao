@@ -186,4 +186,4 @@ In the above example, it makes `$DENARIUS` price equals `DAI` price ( 1 to 1 ).
 
 Now you can start to borrow and pay back the DAO.
 
-For more details how to operate the protocol, please visit the project [Understanding Maker DAO VAT Smart Contract] ("https://github.com/dewiz-xyz/makerdao-vat-smartcontract-docs")
+For more details how to operate the protocol, please visit the project [Understanding Maker DAO VAT Smart Contract]("https://github.com/dewiz-xyz/makerdao-vat-smartcontract-docs")
