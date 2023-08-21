@@ -1,6 +1,6 @@
 # Rome DAO
 
-![Rome Empire Standard](rome-empire-flag.jpeg "Rome Empire Standard")
+![Rome Empire Standard](rome-empire-flag-small.jpeg "Rome Empire Standard")
 
 This project aims to be Ceasar's coin exchange... No, it's a joke :P
 
