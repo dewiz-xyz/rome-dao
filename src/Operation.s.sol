@@ -7,6 +7,9 @@ import {Vat} from "dss/Vat.sol";
 import {RegistryUtil, Numbers} from "./ScriptUtil.sol";
 import {IRegistry} from "./interfaces.sol";
 import {Dai} from "dss/dai.sol";
+import {Dog} from "dss/dog.sol";
+import {Spotter} from "dss/spot.sol";
+import {Clipper} from "dss/clip.sol";
 import {IERC20Metadata} from "./interfaces.sol";
 import {GemJoin, DaiJoin} from "dss/join.sol";
 
@@ -18,6 +21,9 @@ contract Setup is Script {
     IERC20Metadata public denarius;
     GemJoin public gemJoin;
     DaiJoin public daiJoin;
+    Dog public dog;
+    Spotter public spot;
+    Clipper public clip;
 
     function run() external {
         vm.startBroadcast();
@@ -27,6 +33,9 @@ contract Setup is Script {
         _setCollateral();
         _deployGemJoin();
         _deployDaiJoin();
+        _deployDog();
+        _deploySpotter();
+        _deployClipper();
         _vatInitialization();
         vm.stopBroadcast();
     }
@@ -64,6 +73,21 @@ contract Setup is Script {
         vat.hope(address(daiJoin));
     }
 
+    function _deployDog() internal {
+        dog = new Dog(address(vat));
+        registry.setContractAddress("Dog", address(dog));
+    }
+
+    function _deploySpotter() internal {
+        spot = new Spotter(address(vat));
+        registry.setContractAddress("Spotter", address(spot));
+    }
+
+    function _deployClipper() internal {
+        clip = new Clipper(address(vat), address(spot), address(dog), "Denarius-A");
+        registry.setContractAddress("Clipper", address(clip));
+    }
+
     function _vatInitialization() internal {
         uint256 price = 1;
         uint256 numDigitsBelowOneAndPositive = 0;
@@ -78,5 +102,23 @@ contract Setup is Script {
             "spot",
             Numbers.convertToInteger(price, Numbers.rayDecimals(), numDigitsBelowOneAndPositive)
         ); //Actual price of MATIC 2023-08-16 - 0.616 USD
+    }
+}
+
+//  ./scripts/forge-script.sh ./src/Operation.s.sol:RegistryInfo --fork-url=$RPC_URL --broadcast -vvvv
+
+contract RegistryInfo {
+    IRegistry public registry;
+
+    function _setRegistry() internal {
+        (, address registryAddress) = RegistryUtil.getRegistryAddress();
+        registry = IRegistry(registryAddress);
+    }
+
+    function run() external {
+        _setRegistry();
+        console2.log("Dog Address: %s", registry.lookUp("Dog"));
+        console2.log("Spotter Address: %s", registry.lookUp("Spotter"));
+        console2.log("Clipper Address: %s", registry.lookUp("Clipper"));
     }
 }
