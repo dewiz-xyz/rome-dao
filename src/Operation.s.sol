@@ -10,6 +10,7 @@ import {Dai} from "dss/dai.sol";
 import {Dog} from "dss/dog.sol";
 import {Spotter} from "dss/spot.sol";
 import {Clipper} from "dss/clip.sol";
+import {Flopper} from "dss/flop.sol";
 import {IERC20Metadata} from "./interfaces.sol";
 import {GemJoin, DaiJoin} from "dss/join.sol";
 
@@ -24,6 +25,7 @@ contract Setup is Script {
     Dog public dog;
     Spotter public spot;
     Clipper public clip;
+    Flopper public flop;
 
     function run() external {
         vm.startBroadcast();
@@ -36,6 +38,7 @@ contract Setup is Script {
         _deployDog();
         _deploySpotter();
         _deployClipper();
+        _deployFlopper();
         _vatInitialization();
         vm.stopBroadcast();
     }
@@ -86,6 +89,11 @@ contract Setup is Script {
     function _deployClipper() internal {
         clip = new Clipper(address(vat), address(spot), address(dog), "Denarius-A");
         registry.setContractAddress("Clipper", address(clip));
+    }
+
+    function _deployFlopper() internal {
+        flop = new Flopper(address(vat), address(gemJoin));
+        registry.setContractAddress("Flopper", address(flop));
     }
 
     function _vatInitialization() internal {
