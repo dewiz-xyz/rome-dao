@@ -11,6 +11,8 @@ import {Dog} from "dss/dog.sol";
 import {Spotter} from "dss/spot.sol";
 import {Clipper} from "dss/clip.sol";
 import {Flopper} from "dss/flop.sol";
+import {Flapper} from "dss/flap.sol";
+import {Vow} from "dss/vow.sol";
 import {IERC20Metadata} from "./interfaces.sol";
 import {GemJoin, DaiJoin} from "dss/join.sol";
 
@@ -26,6 +28,8 @@ contract Setup is Script {
     Spotter public spot;
     Clipper public clip;
     Flopper public flop;
+    Flapper public flap;
+    Vow public vow;
 
     function run() external {
         vm.startBroadcast();
@@ -39,6 +43,8 @@ contract Setup is Script {
         _deploySpotter();
         _deployClipper();
         _deployFlopper();
+        _deployFlapper();
+        _deployVow();
         _vatInitialization();
         vm.stopBroadcast();
     }
@@ -94,6 +100,16 @@ contract Setup is Script {
     function _deployFlopper() internal {
         flop = new Flopper(address(vat), address(gemJoin));
         registry.setContractAddress("Flopper", address(flop));
+    }
+
+    function _deployFlapper() internal {
+        flap = new Flapper(address(vat), address(gemJoin));
+        registry.setContractAddress("Flapper", address(flap));
+    }
+
+    function _deployVow() internal {
+        vow = new Vow(address(vat), address(flap), address(flop));
+        registry.setContractAddress("Vow", address(vow));
     }
 
     function _vatInitialization() internal {
