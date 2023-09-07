@@ -9,7 +9,7 @@
   "[solidity]": {
     "editor.defaultFormatter": "JuanBlanco.solidity"
   },
-  "git.enabled": false,
+  // "git.enabled": false,
   "solidity.formatter": "forge",
   "solidity.linter": "solhint",
   "solidity.compileUsingRemoteVersion": "v0.6.12+commit.27d51765",
