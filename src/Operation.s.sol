@@ -129,6 +129,110 @@ contract Setup is Script {
     }
 }
 
+//  ./scripts/forge-script.sh ./src/Operation.s.sol:AddCDP --fork-url=$RPC_URL --broadcast -vvvv
+contract AddCDP is Script {
+    IRegistry public registry;
+    Vat public vat;
+    Dai public dai;
+    IERC20Metadata public denarius;
+    GemJoin public gemJoin;
+    DaiJoin public daiJoin;
+    Dog public dog;
+    Spotter public spot;
+    Clipper public clip;
+    Flopper public flop;
+    Flapper public flap;
+    Vow public vow;
+
+    function run() external {
+        vm.startBroadcast();
+        _setRegistry();
+        _getVat();
+        _getDai();
+        _setCollateral();
+        _deployGemJoin();
+        _getDaiJoin();
+        _getDog();
+        _getSpotter();
+        _deployClipper();
+        _deployFlopper();
+        _deployFlapper();
+        _deployVow();
+        _vatInitialization();
+        vm.stopBroadcast();
+    }
+
+    function _setRegistry() internal {
+        (, address registryAddress) = RegistryUtil.getRegistryAddress();
+        registry = IRegistry(registryAddress);
+    }
+
+    function _getVat() internal {
+        vat = Vat(registry.lookUp("Vat"));
+    }
+
+    function _getDai() internal {
+        dai = Dai(registry.lookUp("Dai"));
+    }
+
+    function _setCollateral() internal {
+        denarius = IERC20Metadata(registry.lookUp("Denarius"));
+    }
+
+    function _deployGemJoin() internal {
+        gemJoin = new GemJoin(address(vat), "Denarius-B", address(denarius));
+        registry.setContractAddress("GemJoin-B", address(gemJoin));
+        denarius.approve(address(gemJoin), type(uint256).max);
+    }
+
+    function _getDaiJoin() internal {
+        daiJoin = DaiJoin(registry.lookUp("DaiJoin"));
+    }
+
+    function _getDog() internal {
+        dog = Dog(registry.lookUp("Dog"));
+    }
+
+    function _getSpotter() internal {
+        spot = Spotter(registry.lookUp("Spotter"));
+    }
+
+    function _deployClipper() internal {
+        clip = new Clipper(address(vat), address(spot), address(dog), "Denarius-B");
+        registry.setContractAddress("Clipper-B", address(clip));
+    }
+
+    function _deployFlopper() internal {
+        flop = new Flopper(address(vat), address(gemJoin));
+        registry.setContractAddress("Flopper", address(flop));
+    }
+
+    function _deployFlapper() internal {
+        flap = new Flapper(address(vat), address(gemJoin));
+        registry.setContractAddress("Flapper", address(flap));
+    }
+
+    function _deployVow() internal {
+        vow = new Vow(address(vat), address(flap), address(flop));
+        registry.setContractAddress("Vow", address(vow));
+    }
+
+    function _vatInitialization() internal {
+        uint256 price = 1;
+        uint256 numDigitsBelowOneAndPositive = 0;
+        vat.rely(address(gemJoin));
+        vat.rely(address(dai));
+        vat.init("Denarius-B");
+        vat.file("Line", 1_000_000 * 10 ** 45);
+        vat.file("Denarius-B", "line", 1_000_000 * 10 ** 45);
+        vat.file(
+            "Denarius-B",
+            "spot",
+            Numbers.convertToInteger(price, Numbers.rayDecimals(), numDigitsBelowOneAndPositive)
+        );
+    }
+}
+
 //  ./scripts/forge-script.sh ./src/Operation.s.sol:RegistryInfo --fork-url=$RPC_URL --broadcast -vvvv
 
 contract RegistryInfo {
