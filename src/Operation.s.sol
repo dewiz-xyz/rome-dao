@@ -204,17 +204,17 @@ contract AddCDP is Script {
 
     function _deployFlopper() internal {
         flop = new Flopper(address(vat), address(gemJoin));
-        registry.setContractAddress("Flopper", address(flop));
+        registry.setContractAddress("Flopper-B", address(flop));
     }
 
     function _deployFlapper() internal {
         flap = new Flapper(address(vat), address(gemJoin));
-        registry.setContractAddress("Flapper", address(flap));
+        registry.setContractAddress("Flapper-B", address(flap));
     }
 
     function _deployVow() internal {
         vow = new Vow(address(vat), address(flap), address(flop));
-        registry.setContractAddress("Vow", address(vow));
+        registry.setContractAddress("Vow-B", address(vow));
     }
 
     function _vatInitialization() internal {
@@ -223,7 +223,7 @@ contract AddCDP is Script {
         vat.rely(address(gemJoin));
         vat.rely(address(dai));
         vat.init("Denarius-B");
-        vat.file("Line", 1_000_000 * 10 ** 45);
+        vat.file("Line", vat.Line() + (1_000_000 * 10 ** 45));
         vat.file("Denarius-B", "line", 1_000_000 * 10 ** 45);
         vat.file(
             "Denarius-B",
@@ -234,7 +234,6 @@ contract AddCDP is Script {
 }
 
 //  ./scripts/forge-script.sh ./src/Operation.s.sol:RegistryInfo --fork-url=$RPC_URL --broadcast -vvvv
-
 contract RegistryInfo {
     IRegistry public registry;
 
