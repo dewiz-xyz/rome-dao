@@ -54,3 +54,45 @@ contract VatInitialize is Script {
         vm.stopBroadcast();
     }
 }
+
+//  ./scripts/forge-script.sh ./src/vat.s.sol:VatInfo --fork-url=$RPC_URL --broadcast -vvvv
+contract VatInfo is Script {
+    struct Ilk {
+        uint256 Art; // Total Normalised Debt     [wad]
+        uint256 rate; // Accumulated Rates         [ray]
+        uint256 spot; // Price with Safety Margin  [ray]
+        uint256 line; // Debt Ceiling              [rad]
+        uint256 dust; // Urn Debt Floor            [rad]
+    }
+
+    function run() external returns (bool) {
+        vm.startBroadcast();
+        IRegistry registry;
+        (bool success, address registryAddress) = RegistryUtil.getRegistryAddress();
+        if (!success) {
+            console2.log("Error creating new Registry instance!");
+            revert("registry not found");
+        }
+        registry = IRegistry(registryAddress);
+        Vat vat = Vat(registry.lookUp("Vat"));
+        Ilk memory temp;
+        console2.log("");
+        console2.log("Denarius A - Ilks:");
+        (temp.Art, temp.rate, temp.spot, temp.line, temp.dust) = vat.ilks("Denarius-A");
+        console2.log("Denarius-A - Art: %s", temp.Art);
+        console2.log("Denarius-A - rate: %s", temp.rate);
+        console2.log("Denarius-A - spot: %s", temp.spot);
+        console2.log("Denarius-A - line: %s", temp.line);
+        console2.log("Denarius-A - dust: %s", temp.dust);
+
+        console2.log("");
+        console2.log("Denarius B - Ilks:");
+        (temp.Art, temp.rate, temp.spot, temp.line, temp.dust) = vat.ilks("Denarius-B");
+        console2.log("Denarius-B - Art: %s", temp.Art);
+        console2.log("Denarius-B - rate: %s", temp.rate);
+        console2.log("Denarius-B - spot: %s", temp.spot);
+        console2.log("Denarius-B - line: %s", temp.line);
+        console2.log("Denarius-B - dust: %s", temp.dust);
+        return true;
+    }
+}
