@@ -5,3 +5,5 @@ out = 'out'
 libs = ['lib']
 optimizer = false
 solc = '0.6.12'
+
+fs_permissions = [{ access = "read-write", path = "./" }]

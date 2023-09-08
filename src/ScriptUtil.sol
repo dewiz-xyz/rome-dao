@@ -52,9 +52,21 @@ library Numbers {
 library RegistryUtil {
     Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
-    function getRegistryAddress() public pure returns (bool, address) {
-        address registryAddress = address(0x70607478aFC46410fD4401F3847a4848e661e457);
+    function getRegistryAddress() public view returns (bool, address) {
+        // address registryAddress = address(0x70607478aFC46410fD4401F3847a4848e661e457);
+        address registryAddress = readRegistryAddress();
+        require(registryAddress != address(0), "invalid registry address");
         return (true, registryAddress);
+    }
+
+    function readRegistryAddress() public view returns (address) {
+        address registryAddress = StringToAddress.convert(readRegistryAddressString());
+        return registryAddress;
+    }
+
+    function readRegistryAddressString() public view returns (string memory) {
+        string memory strRegistryAddr = vm.readFile("metadata/registry-address.txt");
+        return strRegistryAddr;
     }
 
     function getContractAddress(string calldata _contractName) public view returns (bool, address) {
